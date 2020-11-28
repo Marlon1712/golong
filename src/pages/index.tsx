@@ -1,8 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
 
-import RocketseatLogo from '../assets/rocketseat.svg'
-
 import { Container } from '../styles/pages/Home'
 import { NextPage } from 'next'
 
@@ -13,9 +11,8 @@ const Home: NextPage = () => {
         <title>Homepage</title>
       </Head>
 
-      <RocketseatLogo />
-      <h1>ReactJS Structure</h1>
-      <p>A ReactJS + Next.js structure made by Rocketseat.</p>
+      <h1>Hello World</h1>
+      <p>Iniciando com Next.js</p>
     </Container>
   )
 }
