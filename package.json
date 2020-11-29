@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "formidable": "^1.2.2",
+    "mongoose": "^5.10.17",
+    "multer": "^1.4.2",
     "next": "10.0.3",
     "next-connect": "^0.9.1",
     "next-images": "^1.6.2",
@@ -16,6 +19,9 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@types/formidable": "^1.0.31",
+    "@types/mongoose": "^5.10.1",
+    "@types/multer": "^1.4.4",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "@types/styled-components": "^5.1.4",

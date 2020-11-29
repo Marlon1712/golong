@@ -4,8 +4,6 @@ import mongoose from 'mongoose'
 import multerConfig from '../../config/multer'
 import Usuario from '../../models/user'
 import Anexo from '../../models/anexo'
-import formidable from 'formidable'
-import fs from 'fs'
 
 function onError(err, req, res, next) {
   // console.log(`---------${err}`)
@@ -13,11 +11,6 @@ function onError(err, req, res, next) {
   // OR: you may want to continue
 
   // next()
-}
-export const config = {
-  api: {
-    bodyParser: false
-  }
 }
 
 // const upload = multer({ dest: '../../tmp' })
@@ -29,13 +22,9 @@ mongoose.connect(process.env.MONGO_URL, {
 const handler = nc({ onError })
 
 handler
-  .use((req, res, next) => {
-    console.log('req')
-    next()
-  })
   .get(async (req, res) => {
     try {
-      const data = await Usuario.find({})
+      const data = await Anexo.find({})
       res.status(200).send(data)
     } catch (e) {
       res.status(500).send({
@@ -76,8 +65,11 @@ handler
     }
   })
   .delete(async (req, res) => {
+    console.log(req.params.id)
     try {
-      await Usuario.findOneAndRemove({ idambev: req.body.idambev })
+      const anexo = await Anexo.findById(req.params.id)
+
+      await anexo.remove()
       res.status(200).send({
         message: 'Usuario removido com sucesso!'
       })
@@ -97,5 +89,9 @@ handler
     })
     return res.json(anexo)
   })
-
+export const config = {
+  api: {
+    bodyParser: false
+  }
+}
 export default handler
