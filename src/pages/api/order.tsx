@@ -11,6 +11,10 @@ function onError(err, req, res, next) {
 const handler = nc({ onError })
 
 handler
+  .use((req, res, next) => {
+    console.log('req')
+    next()
+  })
   .get((req, res) => {
     res.send('Hello world')
   })
