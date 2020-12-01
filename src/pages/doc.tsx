@@ -1,21 +1,29 @@
 import { NextPage } from 'next'
-import React from 'react'
-
-import { Viewer } from '@react-pdf-viewer/core'
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
-import '@react-pdf-viewer/core/lib/styles/index.css'
-import '@react-pdf-viewer/default-layout/lib/styles/index.css'
-
+import React, { useState } from 'react'
+import { pdfjs, Document, Page } from 'react-pdf'
+import { Container } from '../styles/pages/doc-style'
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 const MyApp: NextPage = () => {
-  const defaultLayoutPluginInstance = defaultLayoutPlugin()
+  const [numPages, setNumPages] = useState(null)
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages)
+  }
+
+  const pdf = '/procediment/teste.pdf'
 
   return (
-    <div>
-      <Viewer
-        fileUrl="/procediment/npm.pdf"
-        plugins={[defaultLayoutPluginInstance]}
-      />
-    </div>
+    <Container>
+      <Document
+        file={pdf}
+        options={{ workerSrc: '/pdf.worker.js' }}
+        onLoadSuccess={onDocumentLoadSuccess}
+      >
+        {Array.from(new Array(numPages), (el, index) => (
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+        ))}
+      </Document>
+    </Container>
   )
 }
 

@@ -1,25 +1,28 @@
 import styled from 'styled-components'
-import WebViewer from '@pdftron/webviewer'
+
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  text-align: center;
 
-  header {
-    width: 100%;
-    height: 60px;
-    padding: 8px 8px 8px 16px;
-    box-sizing: border-box;
-    background: #00a5e4;
-    font-size: 1.2em;
-    line-height: 44px;
-    color: white;
+  /* For pdf */
+  .react-pdf__Page {
+    margin-top: 10px;
+    align-content: center;
+  }
+  .react-pdf__Page__textContent {
+    border: 1px solid darkgrey;
+    box-shadow: 5px 5px 5px 1px #ccc;
+    border-radius: 5px;
   }
 
-  p {
-    margin-top: 24px;
-    font-size: 24px;
-    line-height: 32px;
+  .react-pdf__Page__annotations.annotationLayer {
+    padding: 20px;
+  }
+
+  .react-pdf__Page__canvas {
+    margin: 0 auto;
   }
 `
