@@ -6,16 +6,13 @@ export const Container = styled.div`
   align-content: center;
   align-items: center;
   text-align: center;
+  margin: auto;
 
   /* For pdf */
   .react-pdf__Page {
-    margin-top: 10px;
+    scale: 2.5;
+    margin: auto;
     align-content: center;
-  }
-  .react-pdf__Page__textContent {
-    border: 1px solid darkgrey;
-    box-shadow: 5px 5px 5px 1px #ccc;
-    border-radius: 5px;
   }
 
   .react-pdf__Page__annotations.annotationLayer {
@@ -23,6 +20,6 @@ export const Container = styled.div`
   }
 
   .react-pdf__Page__canvas {
-    margin: 0 auto;
+    margin: auto;
   }
 `
