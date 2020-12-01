@@ -16,11 +16,12 @@ const MyApp: NextPage = () => {
     <Container>
       <Document
         file={pdf}
+        renderMode={'canvas'}
         options={{ workerSrc: '/pdf.worker.js' }}
         onLoadSuccess={onDocumentLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} width={2000} />
         ))}
       </Document>
     </Container>
