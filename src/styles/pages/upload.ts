@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  width: 100vw;
-  height: 10vh;
+  width: 100%;
+  height: 100%;
 
   display: flex;
   justify-content: center;
@@ -10,9 +10,10 @@ export const Container = styled.div`
   flex-direction: column;
 
   h1 {
-    font-size: 54px;
+    font-size: 18px;
     color: ${props => props.theme.colors.primary};
     margin-top: 40px;
+    margin-bottom: 40px;
   }
 
   p {

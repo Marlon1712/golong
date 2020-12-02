@@ -1,7 +1,8 @@
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { Container } from '../styles/pages/upload'
-const MyUploader = () => {
+import { NextPage } from 'next'
+const MyUploader: NextPage = () => {
   // specify upload params and url for your files
   const getUploadParams = ({ meta }) => {
     return { url: '/' }
@@ -18,12 +19,16 @@ const MyUploader = () => {
   }
 
   return (
-    <Dropzone
-      getUploadParams={getUploadParams}
-      onChangeStatus={handleChangeStatus}
-      onSubmit={handleSubmit}
-      accept="image/*,audio/*,video/*,application/pdf"
-    />
+    <Container>
+      <h1>Formulario vai aqui em cima</h1>
+      <Dropzone
+        getUploadParams={getUploadParams}
+        onChangeStatus={handleChangeStatus}
+        onSubmit={handleSubmit}
+        accept="image/*,video/*,application/pdf"
+        styles={{ width: '20%', heigth: '10%', border: '5px solid black' }}
+      />
+    </Container>
   )
 }
 

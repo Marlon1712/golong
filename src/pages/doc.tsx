@@ -10,7 +10,7 @@ const MyApp: NextPage = () => {
     setNumPages(numPages)
   }
 
-  const pdf = '/procediment/teste.pdf'
+  const pdf = '/procediment/calibracao.pdf'
 
   return (
     <Container>
@@ -21,7 +21,7 @@ const MyApp: NextPage = () => {
         onLoadSuccess={onDocumentLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} width={2000} />
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} width={1400} />
         ))}
       </Document>
     </Container>
