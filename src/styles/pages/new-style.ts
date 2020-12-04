@@ -5,15 +5,9 @@ export const Container = styled.div`
   height: 100vh;
 
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
   flex-direction: column;
-
-  @media (min-width: 1024px) {
-    flex-wrap: nowrap;
-  }
 
   h1 {
     font-size: 54px;

@@ -1,38 +1,12 @@
 import nc from 'next-connect'
-import multer from 'multer'
-import mongoose from 'mongoose'
-import multerConfig from '../../config/multer'
-import Usuario from '../../models/user'
-import Anexo from '../../models/anexo'
-import formidable from 'formidable'
-import fs from 'fs'
+import dbConnect from '../../../utils/dbConnect'
+import Usuario from '../../../models/Usuario'
 
-function onError(err, req, res, next) {
-  // console.log(`---------${err}`)
-  res.status(500).end(err.toString())
-  // OR: you may want to continue
+dbConnect()
 
-  // next()
-}
-export const config = {
-  api: {
-    bodyParser: false
-  }
-}
-
-// const upload = multer({ dest: '../../tmp' })
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-
-const handler = nc({ onError })
+const handler = nc()
 
 handler
-  .use((req, res, next) => {
-    console.log('req')
-    next()
-  })
   .get(async (req, res) => {
     try {
       const data = await Usuario.find({})
@@ -86,16 +60,6 @@ handler
         message: 'Falha ao processar sua requisição'
       })
     }
-  })
-  .patch(multer(multerConfig).single('file'), async (req, res) => {
-    const { originalname: name, size, key, location: url = '' } = req.file
-    const anexo = await Anexo.create({
-      name,
-      size,
-      key,
-      url
-    })
-    return res.json(anexo)
   })
 
 export default handler

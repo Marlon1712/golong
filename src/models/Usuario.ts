@@ -1,9 +1,7 @@
-'use strict'
-
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
-const schema = new Schema({
+const UsuarioSchema = new Schema({
   nome: {
     type: String,
     required: true,
@@ -17,4 +15,7 @@ const schema = new Schema({
   }
 })
 
-export default mongoose.model('Usuario', schema)
+const Usuario =
+  mongoose.models.Usuario || mongoose.model('Usuario', UsuarioSchema)
+
+export default Usuario
