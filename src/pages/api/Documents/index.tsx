@@ -1,9 +1,8 @@
 import nc from 'next-connect'
 import multer from 'multer'
 import mongoose from 'mongoose'
-import multerConfig from '../../config/multer'
-import Usuario from '../../models/user'
-import Anexo from '../../models/anexo'
+import multerConfig from '../../../config/multer'
+import Anexo from '../../../models/anexo'
 
 function onError(err, req, res, next) {
   // console.log(`---------${err}`)
@@ -34,7 +33,7 @@ handler
   })
   .post(async (req, res) => {
     try {
-      const usuario = new Usuario(req.body)
+      const usuario = new Anexo(req.body)
       await usuario.save()
       res.status(200).send({
         message: 'Usuario cadastrado com sucesso'
@@ -47,7 +46,7 @@ handler
   })
   .put(async (req, res, next) => {
     try {
-      await Usuario.findOneAndUpdate(
+      await Anexo.findOneAndUpdate(
         { idambev: req.body.idambev },
         {
           $set: {
@@ -80,7 +79,7 @@ handler
     }
   })
   .patch(multer(multerConfig).single('file'), async (req, res) => {
-    const { originalname: name, size, key, location: url = '' } = req.file
+    const { originalname: name, size, key, path: url = '' } = req.file
     const anexo = await Anexo.create({
       name,
       size,

@@ -24,4 +24,6 @@ AnexoSchema.pre('remove', function () {
   return promisify(fs.unlink)(path.resolve(__dirname, 'public', this.key))
 })
 
-export default mongoose.model('Anexo', AnexoSchema)
+const Anexo = mongoose.models.Anexo || mongoose.model('Anexo', AnexoSchema)
+
+export default Anexo
