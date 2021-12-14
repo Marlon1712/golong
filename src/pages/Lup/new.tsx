@@ -142,11 +142,11 @@ export default function App(): JSX.Element {
               </div>
             </Imputt>
           </div>
-          <div>
+          <div className="passos">
             <ul>
               {passos.map((data, index) => (
                 <li style={{ marginTop: '10px' }} key={data.id}>
-                  <div className="passos">
+                  <div>
                     <div>
                       <input
                         autoComplete="off"
@@ -286,13 +286,7 @@ export default function App(): JSX.Element {
               </div>
             </ul>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
+          <div className="animation-upload">
             {percentage > 0 && percentage < 100 ? (
               <span style={{ color: 'gray' }}>{`${percentage}% - ${parseFloat(
                 (percentLoaded / 1024 / 1024).toFixed(2)

@@ -6,6 +6,7 @@ export const Container = styled.div`
   height: 100%;
   margin: 0px;
   padding: 10px;
+  padding-top: 60px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -25,7 +26,7 @@ export const Container = styled.div`
     box-sizing: border-box;
     background-color: white;
     box-shadow: 5px 5px 15px 5px #000000;
-    margin-top: 60px;
+    margin-top: 20px;
     width: 80%;
     max-width: 950px;
     padding: 10px;
@@ -72,11 +73,9 @@ export const Container = styled.div`
   input {
     width: 100%;
     display: block;
-    font-size: 16px;
     font-family: Arial, sans-serif;
     color: #ec8209;
     border-radius: 3px;
-    outline-color: #ec8209;
     transition: all 0.2s;
     touch-action: manipulation;
   }
@@ -95,24 +94,8 @@ export const Container = styled.div`
     list-style: none;
   }
 
-  div {
-    flex-direction: column;
-    &:nth-child(1) {
-      animation: move 500ms;
-    }
-    &:nth-child(2) {
-      animation: move 500ms;
-      animation-delay: 100ms;
-    }
-    &:nth-child(3) {
-      animation: move 500ms;
-      animation-delay: 250ms;
-    }
-  }
-
   label {
     color: #405c60;
-    margin-left: 0px;
     transition: all 0.2s;
     touch-action: manipulation;
   }
@@ -213,43 +196,10 @@ export const Container = styled.div`
     background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
   }
 
-  @keyframes fade {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  @keyframes move {
-    from {
-      opacity: 0;
-      transform: translateX(-35%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0%);
-    }
-  }
-  .validade-error {
-    animation: nono 500ms;
-  }
-  @keyframes nono {
-    0%,
-    100% {
-      opacity: 0;
-      transform: translateX(0);
-    }
-    35% {
-      opacity: 1;
-      transform: translateX(-15%);
-    }
-    70% {
-      opacity: 1;
-      transform: translateX(15%);
-    }
+  .amination-upload {
+    display: block;
+    justify-content: center;
+    align-items: center;
   }
 
   @media (max-width: 800px) {
@@ -272,11 +222,8 @@ export const Container = styled.div`
     h1 {
       font-size: 32px;
     }
-    input {
-      font-size: 12px;
-    }
     textarea {
-      font-size: 12px;
+      font-size: 11px;
     }
     label {
       font-size: 14px;
@@ -307,6 +254,10 @@ export const Imputt = styled.div`
     &:last-child {
       border: 0;
     }
+  }
+
+  #titulo {
+    margin-top: 20px;
   }
   textarea {
     width: 100%;
