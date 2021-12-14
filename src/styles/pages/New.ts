@@ -10,8 +10,15 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  form::-webkit-scrollbar {
-    width: opx;
+  h1 {
+    font-size: 54px;
+    color: ${props => props.theme.colors.primary};
+    padding: 2px 0 10px 0;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
 
   form {
@@ -28,15 +35,13 @@ export const Container = styled.div`
     overflow-y: auto;
     animation: fade 500ms;
   }
-  h1 {
-    font-size: 54px;
-    color: ${props => props.theme.colors.primary};
-    padding: 2px 0 10px 0;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+
+  form::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  .cabecalho {
+    display: block;
   }
 
   .view-input {
@@ -44,7 +49,10 @@ export const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     .img-container {
+      width: 100%;
       display: flex;
+      padding-top: 10px;
+      padding-bottom: 10px;
       align-items: center;
       justify-content: center;
 
@@ -64,7 +72,6 @@ export const Container = styled.div`
   input {
     width: 100%;
     display: block;
-    height: 50px;
     font-size: 16px;
     font-family: Arial, sans-serif;
     color: #ec8209;
@@ -73,44 +80,22 @@ export const Container = styled.div`
     transition: all 0.2s;
     touch-action: manipulation;
   }
-  textarea {
-    width: 100%;
-    height: 90px;
-    display: block;
-    font-size: 16px;
-    resize: none;
-    font-family: Arial, sans-serif;
-    color: #ec8209;
-    border-radius: 3px;
-    outline-color: #ec8209;
-  }
+
   .obs {
     height: 50px;
   }
   .passos {
-    margin: 0px;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     border-radius: 2px;
   }
-  select {
-    width: 100%;
-    display: block;
-    margin-top: 8px;
-    padding: 7px;
-    font-size: 16px;
-    color: #ec8209;
-    border-radius: 2px;
-    border: 1px solid #ccddef;
-    outline-color: #ec8209;
-  }
+
   li {
     list-style: none;
   }
 
   div {
-    margin-bottom: 10px;
     flex-direction: column;
     &:nth-child(1) {
       animation: move 500ms;
@@ -136,6 +121,15 @@ export const Container = styled.div`
     color: red;
   }
 
+  .btns {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
   .submit-passo {
     display: block;
     min-width: 120px;
@@ -143,7 +137,7 @@ export const Container = styled.div`
     background-color: #ec8209;
     color: white;
     border-radius: 5px;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: auto;
@@ -189,14 +183,7 @@ export const Container = styled.div`
     background-size: cover;
     background-position: 50% 50%;
   }
-  .btns {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 40px;
-  }
+
   .btn:focus {
     outline: none;
     box-shadow: none;
@@ -268,13 +255,13 @@ export const Container = styled.div`
   @media (max-width: 800px) {
     .img-container {
       img {
-        width: 50vw;
+        width: 70%;
         height: auto;
         border-radius: 10px;
       }
       video {
-        width: 50vw;
-        height: 50vh;
+        width: 70%;
+        height: 50%;
         border-radius: 10px;
       }
     }
@@ -296,77 +283,20 @@ export const Container = styled.div`
     }
   }
 `
-export const Imput = styled.div`
-  position: relative;
-  padding-top: 13px;
 
-  input {
-    border: 0;
-    border-bottom: 2px solid lightgrey;
-    outline: none;
-    min-width: 180px;
-    font-size: 16px;
-    transition: all 0.3s ease-out;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-    -webkit-appearance: none;
-    border-radius: 0;
-  }
-
-  input:focus {
-    border-bottom: 2px solid #ec8209;
-  }
-
-  input::placeholder {
-    color: transparent;
-  }
-
-  label {
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin-top: 13px;
-    transition: all 0.3s ease-out;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-  }
-
-  input:required:invalid + label {
-    color: red;
-  }
-  input:focus:required:invalid {
-    border-bottom: 2px solid red;
-  }
-  input:required:invalid + label:before {
-    content: '*';
-  }
-  input:focus + label,
-  input:not(:placeholder-shown) + label {
-    font-size: 13px;
-    margin-top: 0;
-    color: #ec8209;
-  }
-`
-
-const border = ' 1px solid #ec8209'
 const padding = '10px'
 const labelFontSize = '16px'
 export const Imputt = styled.div`
-  // float label
-
   .control {
     float: left;
     position: relative;
     width: 100%;
-    border-bottom: ${border};
     padding-top: ${padding} + ${labelFontSize};
     padding-bottom: ${padding};
 
     // you proably want to replace these with your grid classes
     &.small {
       width: 30%;
-      border-right: 1px solid #ddd;
     }
 
     &.medium {
@@ -378,25 +308,34 @@ export const Imputt = styled.div`
       border: 0;
     }
   }
-  input,
   textarea {
-    display: block;
-    border: 1px solid #ccddef;
-    outline-color: #ec8209;
-    padding: 7px;
     width: 100%;
+    height: 40px;
+    display: block;
+    font-size: 16px;
     resize: none;
+    font-family: Arial, sans-serif;
+    color: #ec8209;
+    border: none;
+    border-bottom: 1px solid #ccddef;
+    outline: #ec8209;
+    padding: 7px;
+
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
 
     // inactive but shown label (exceptions: opacity and top)
     &:not(:placeholder-shown) {
       padding-top: 20px;
-      transition: top 0.7s ease;
+      transition: top 0.5s ease, opacity 0.5s ease;
+      border-bottom: 2px solid #ec8209;
     }
     & + label {
       position: absolute;
       margin-left: 7px;
-      top: 20px;
-      transition: top 0.7s ease, opacity 0.7s ease;
+      top: 10px;
+      transition: top 0.5s ease, opacity 0.5s ease;
       opacity: 0;
 
       // Some nice styling

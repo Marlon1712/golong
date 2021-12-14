@@ -57,7 +57,7 @@ handler
       })
       const data = await Lup.findOne({ nome: nome })
       if (data) {
-        return res.json({ message: 'Arquivo existente atualizado' })
+        return res.json({ message: 'Arquivo Atualizado' })
       } else {
         await Lup.create({
           nome,
@@ -68,11 +68,11 @@ handler
           criador
         })
 
-        return res.json({ message: 'Arquivo salvo com sucesso!' })
+        return res.json({ message: ' Salvo com Sucesso !' })
       }
     } catch (err) {
       console.log(err)
-      return res.json({ message: 'Erro ao processar sua requisição' })
+      return res.json({ error: ' Erro ao Salvar ' })
     }
   })
 export const config = {
