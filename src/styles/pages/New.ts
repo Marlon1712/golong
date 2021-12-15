@@ -108,6 +108,7 @@ export const Container = styled.div`
     display: flex;
     width: 100%;
     margin-bottom: 10px;
+    margin-top: 20px;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
@@ -223,7 +224,7 @@ export const Container = styled.div`
       font-size: 32px;
     }
     textarea {
-      font-size: 11px;
+      font-size: 12px;
     }
     label {
       font-size: 14px;
@@ -239,7 +240,6 @@ export const Imputt = styled.div`
     position: relative;
     width: 100%;
     padding-top: ${padding} + ${labelFontSize};
-    padding-bottom: ${padding};
 
     // you proably want to replace these with your grid classes
     &.small {
@@ -256,12 +256,9 @@ export const Imputt = styled.div`
     }
   }
 
-  #titulo {
-    margin-top: 20px;
-  }
   textarea {
     width: 100%;
-    height: 40px;
+    height: 50px;
     display: block;
     font-size: 16px;
     resize: none;
@@ -271,6 +268,7 @@ export const Imputt = styled.div`
     border-bottom: 1px solid #ccddef;
     outline: #ec8209;
     padding: 7px;
+    cursor: pointer;
 
     &::-webkit-scrollbar {
       width: 0px;
@@ -280,7 +278,8 @@ export const Imputt = styled.div`
     &:not(:placeholder-shown) {
       padding-top: 20px;
       transition: top 0.5s ease, opacity 0.5s ease;
-      border-bottom: 2px solid #ec8209;
+      border-bottom: none; //2px solid #ec8209;
+      cursor: text;
     }
     & + label {
       position: absolute;

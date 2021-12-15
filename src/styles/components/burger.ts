@@ -20,7 +20,7 @@ export const Ul = styled.ul<props>`
     font-weight: bold;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 100vw) {
     flex-flow: column nowrap;
     background-color: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
@@ -61,7 +61,7 @@ export const StyledBurger = styled.div<props>`
   right: 20px;
   z-index: 20;
   display: none;
-  @media (max-width: 768px) {
+  @media (max-width: 100vw) {
     display: flex;
     justify-content: space-around;
     flex-flow: column nowrap;

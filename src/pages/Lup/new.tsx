@@ -1,3 +1,4 @@
+import { NextPage } from 'next'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Container, Imputt } from '../../styles/pages/New'
@@ -6,6 +7,12 @@ import { produce } from 'immer'
 import { generate } from 'shortid'
 import { FaTrash, FaPlus, FaExclamationTriangle, FaCheck } from 'react-icons/fa'
 import axios from 'axios'
+import setInputHeight from '../../config/setInputHeight'
+import Dropzone from 'react-dropzone'
+import {
+  DropContainer,
+  UploadMessage
+} from '../../styles/components/UploadZone'
 
 interface passosInterface {
   id: string
@@ -31,7 +38,7 @@ interface mssg {
   error?: string
 }
 
-export default function App(): JSX.Element {
+const NewLup: NextPage = () => {
   const [passos, setPassos] = useState<passosInterface[]>([
     {
       id: generate(),
@@ -44,11 +51,13 @@ export default function App(): JSX.Element {
       alt: ''
     }
   ])
+
   const [msg, setMsg] = useState<mssg>({})
   const { register, handleSubmit } = useForm<FormData>()
   const [percentage, setPercentage] = useState(0)
   const [percentLoaded, setPercentLoaded] = useState(0)
   const [percentTotal, setPercentTotal] = useState(0)
+
   const onSubmit = (data: FormData) => {
     data.passos = passos
     const proced = new FormData()
@@ -76,15 +85,30 @@ export default function App(): JSX.Element {
     axios
       .post('/api/Lup', proced, options)
       .then(response => {
-        if (response.data) {
-          setMsg(response.data)
+        if (response?.data?.message) {
+          setMsg({ message: response.data.message })
         } else {
-          setMsg(response.data)
+          setMsg({ message: response.data.message })
         }
       })
       .catch(e => {
-        setMsg(e)
+        setMsg({ error: e })
       })
+  }
+
+  const renderDragMessage = (isDragActive, isDragReject, index) => {
+    if (!isDragActive) {
+      return (
+        <UploadMessage>
+          {`Click para incluir anexo no Passo ${index + 1}`}
+        </UploadMessage>
+      )
+    }
+    if (isDragReject) {
+      return <UploadMessage type="error">Arquivo não suportado</UploadMessage>
+    }
+
+    return <UploadMessage type="success">Solte os arquivos</UploadMessage>
   }
 
   return (
@@ -101,8 +125,9 @@ export default function App(): JSX.Element {
                   id="nome"
                   required
                   autoComplete="off"
-                  placeholder="Informe nome do procedimento"
+                  placeholder="Nome Da Lup"
                   {...register('nome', { required: true })}
+                  onChange={event => setInputHeight(event, '40px')}
                 />
                 <label>Nome:</label>
               </div>
@@ -113,8 +138,9 @@ export default function App(): JSX.Element {
                   id="equipamento"
                   autoComplete="off"
                   required
-                  placeholder="Informe equipamento aplicavel"
+                  placeholder="Equipamentos aplicaveis"
                   {...register('equipamento', { required: true })}
+                  onChange={event => setInputHeight(event, '40px')}
                 />
                 <label>Aplicabidade:</label>
               </div>
@@ -124,8 +150,9 @@ export default function App(): JSX.Element {
                 <textarea
                   id="tag"
                   required
-                  placeholder="tags"
+                  placeholder="Informe tag : exemplo #L541 #ECH ..."
                   {...register('tag', { required: false })}
+                  onChange={event => setInputHeight(event, '40px')}
                 />
                 <label>Tags:</label>
               </div>
@@ -135,8 +162,9 @@ export default function App(): JSX.Element {
                 <textarea
                   id="descricao"
                   required
-                  placeholder="Descreva objetivo do procedimento"
+                  placeholder="Breve Descrição/Objetivo"
                   {...register('descricao', { required: true })}
+                  onChange={event => setInputHeight(event, '40px')}
                 />
                 <label htmlFor="objetivo">Descrição:</label>
               </div>
@@ -150,8 +178,9 @@ export default function App(): JSX.Element {
                     <div>
                       <input
                         autoComplete="off"
-                        onChange={e => {
-                          const numero = parseInt(e.target.value) + 1
+                        onChange={event => {
+                          setInputHeight(event, '40px')
+                          const numero = parseInt(event.target.value) + 1
                           setPassos(currentPasso =>
                             produce(currentPasso, v => {
                               v[index].numero = numero
@@ -173,6 +202,7 @@ export default function App(): JSX.Element {
                           placeholder={`Titulo do passo ${index + 1}`}
                           maxLength={30}
                           onChange={event => {
+                            setInputHeight(event, '40px')
                             const titulo = event.target.value
                             setPassos(currentPasso =>
                               produce(currentPasso, v => {
@@ -193,8 +223,9 @@ export default function App(): JSX.Element {
                           required
                           autoComplete="off"
                           placeholder="Digite uma observação caso necessário"
-                          onChange={e => {
-                            const obs = e.target.value
+                          onChange={event => {
+                            setInputHeight(event, '40px')
+                            const obs = event.target.value
                             setPassos(currentPasso =>
                               produce(currentPasso, v => {
                                 v[index].obs = obs
@@ -213,6 +244,7 @@ export default function App(): JSX.Element {
                           required
                           autoComplete="off"
                           onChange={event => {
+                            setInputHeight(event, '40px')
                             const descricao = event.target.value
                             setPassos(currentPasso =>
                               produce(currentPasso, v => {
@@ -236,14 +268,9 @@ export default function App(): JSX.Element {
                           )}
                         </div>
                       )}
-                      <input
-                        type="file"
-                        className="custom-file-input"
-                        name="file"
-                        accept=".png, .jpg, .jpeg, .mp4"
-                        onChange={event => {
-                          const target = event.target as HTMLInputElement
-                          const anexo = (target.files as FileList)[0]
+                      <Dropzone
+                        onDrop={acceptedFiles => {
+                          const anexo = acceptedFiles[0]
                           setPassos(currentPasso =>
                             produce(currentPasso, v => {
                               v[index].anexo = anexo
@@ -252,7 +279,26 @@ export default function App(): JSX.Element {
                             })
                           )
                         }}
-                      />
+                      >
+                        {({
+                          getRootProps,
+                          getInputProps,
+                          isDragActive,
+                          isDragReject
+                        }) => (
+                          <section>
+                            <DropContainer {...getRootProps()}>
+                              <input {...getInputProps()} />
+
+                              {renderDragMessage(
+                                isDragActive,
+                                isDragReject,
+                                index
+                              )}
+                            </DropContainer>
+                          </section>
+                        )}
+                      </Dropzone>
                     </div>
                   </div>
                 </li>
@@ -316,3 +362,5 @@ export default function App(): JSX.Element {
     </>
   )
 }
+
+export default NewLup
