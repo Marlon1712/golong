@@ -31,3 +31,12 @@ export const UploadMessage = styled.p`
   align-items: center;
   padding: 15px 0;
 `
+export const Preview = styled.div`
+  width: 400px;
+  height: 400px;
+  border-radius: 5px;
+  background-image: url(${props => props.src});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+`

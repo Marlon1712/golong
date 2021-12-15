@@ -11,7 +11,8 @@ import setInputHeight from '../../config/setInputHeight'
 import Dropzone from 'react-dropzone'
 import {
   DropContainer,
-  UploadMessage
+  UploadMessage,
+  Preview
 } from '../../styles/components/UploadZone'
 
 interface passosInterface {
@@ -261,7 +262,7 @@ const NewLup: NextPage = () => {
                       {!!data.src && (
                         <div className="img-container">
                           {data.alt.indexOf('mp4') < 0 && (
-                            <img src={data.src} alt="anexo" />
+                            <Preview src={data.src} />
                           )}
                           {data.alt.indexOf('mp4') > 0 && (
                             <video src={data.src} className="video-preview" />

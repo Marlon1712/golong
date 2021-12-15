@@ -70,20 +70,11 @@ export const Container = styled.div`
     }
   }
 
-  input {
-    width: 100%;
-    display: block;
-    font-family: Arial, sans-serif;
-    color: #ec8209;
-    border-radius: 3px;
-    transition: all 0.2s;
-    touch-action: manipulation;
-  }
-
   .obs {
     height: 50px;
   }
   .passos {
+    display: block;
     flex-direction: column;
     align-items: center;
     padding: 20px;
@@ -92,16 +83,6 @@ export const Container = styled.div`
 
   li {
     list-style: none;
-  }
-
-  label {
-    color: #405c60;
-    transition: all 0.2s;
-    touch-action: manipulation;
-  }
-
-  span {
-    color: red;
   }
 
   .btns {
@@ -156,16 +137,6 @@ export const Container = styled.div`
     animation: move 500ms;
     animation-delay: 300ms;
     animation-fill-mode: backwards;
-  }
-  .img-preview {
-    width: 400px;
-    height: 400px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: 50% 50%;
   }
 
   .btn:focus {
