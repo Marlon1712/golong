@@ -11,11 +11,11 @@ export const multerConfig: Options = {
           break
         }
         case 'application/pdf': {
-          cb(null, './public/uploads/document')
+          cb(null, './public/uploads/documents')
           break
         }
         default: {
-          cb(null, './public/uploads/image')
+          cb(null, './public/uploads/images')
           break
         }
       }
