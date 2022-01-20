@@ -1,6 +1,6 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Container } from '../../styles/pages/Lup'
 import Navbar from '../../components/Navbar'
@@ -30,6 +30,7 @@ interface props {
   id: string
   urlEnv: string
 }
+
 interface passoviwer {
   _id: string
   numero: number
@@ -41,11 +42,12 @@ interface passoviwer {
 
 export default function Lup({ id, urlEnv }: props) {
   const urlDev = `/Lup/${id}`
+  const [segundos, setSegundos] = useState(0)
   const { data } = procedimentFetch<lup>(urlDev)
 
-  const { isFallback } = useRouter()
+  // const { isFallback } = useRouter()
 
-  if (isFallback) {
+  if (!data) {
     return (
       <>
         <Navbar />
@@ -55,6 +57,17 @@ export default function Lup({ id, urlEnv }: props) {
       </>
     )
   }
+
+  // if (isFallback) {
+  //   return (
+  //     <>
+  //       <Navbar />
+  //       <Container>
+  //         <Loading />
+  //       </Container>
+  //     </>
+  //   )
+  // }
 
   function viewAnexo(passo: passoviwer) {
     if (passo.anexo) {

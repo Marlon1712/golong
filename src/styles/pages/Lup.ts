@@ -149,7 +149,7 @@ export const Container = styled.div`
     color: white;
     justify-content: right;
   }
-  @media (max-width: 400px) {
+  @media (max-width: 450px) {
     .form {
       width: 100%;
       height: 100%;

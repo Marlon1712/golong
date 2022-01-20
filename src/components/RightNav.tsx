@@ -2,14 +2,7 @@ import React from 'react'
 import { Ul } from '../styles/components/burger'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import {
-  FaUser,
-  FaFileAlt,
-  FaFileInvoice,
-  FaBookMedical,
-  FaTools,
-  FaBroom
-} from 'react-icons/fa'
+import { FaUser, FaFileAlt, FaBookMedical } from 'react-icons/fa'
 import { HiClipboardCheck } from 'react-icons/hi'
 
 interface props {
@@ -28,30 +21,6 @@ const RightNav: NextPage<props> = ({ open }) => {
         </Link>
       </li>
       <li>
-        <Link href="/Lup" scroll={false}>
-          <a className="link">
-            <FaFileAlt />
-            {" Lup's"}
-          </a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/Procedimento" scroll={false}>
-          <a className="link">
-            <FaFileInvoice />
-            {' Procedimentos'}
-          </a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/CheckList" scroll={false}>
-          <a className="link">
-            <HiClipboardCheck />
-            {' CheckList'}
-          </a>
-        </Link>
-      </li>
-      <li>
         <Link href="/BookFalha" scroll={false}>
           <a className="link">
             <FaBookMedical />
@@ -60,18 +29,18 @@ const RightNav: NextPage<props> = ({ open }) => {
         </Link>
       </li>
       <li>
-        <Link href="/BookFalha" scroll={false}>
+        <Link href="/Lup" scroll={false}>
           <a className="link">
-            <FaTools />
-            {' Manutenção'}
+            <FaFileAlt />
+            {" Lup's"}
           </a>
         </Link>
       </li>
       <li>
-        <Link href="/BookFalha" scroll={false}>
+        <Link href="/CheckList" scroll={false}>
           <a className="link">
-            <FaBroom />
-            {' Cronograma'}
+            <HiClipboardCheck />
+            {' CheckList & Manutenção'}
           </a>
         </Link>
       </li>

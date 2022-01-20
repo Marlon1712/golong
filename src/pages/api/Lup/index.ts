@@ -4,6 +4,8 @@ import dbConnect from '../../../config/dbConnect'
 import Lup from '../../../models/Lup'
 import multer from 'multer'
 import { multerConfig } from '../../../config/multer'
+// import fs from 'fs'
+// import formidable, { IncomingForm } from 'formidable'
 
 dbConnect()
 
@@ -15,16 +17,27 @@ interface lupope {
   descricao: string
   alt: string
 }
+interface filler {
+  fieldname: string
+  originalname: string
+  encoding: string
+  mimetype: string
+  destination: string
+  filename: string
+  path: string
+  size: number
+}
 
 const handler = nc<NextApiRequest, NextApiResponse>()
 handler
   .get(async (req, res) => {
     try {
-      let str = req.headers.tag.trim()
-      str = str.replace(/\s{2,}/g, ' ')
-      const array = str.split(' ')
+      let str = req.headers.tag?.toString().trim()
+      str = str?.replace(/\s{2,}/g, ' ')
+      const array = str?.split(' ')
 
       const data = await Lup.find({ tags: { $all: array } })
+      console.log(data.length)
       res.status(200).send(data)
     } catch (e) {
       res.status(500).send({
@@ -32,10 +45,9 @@ handler
       })
     }
   })
-  .post(multer(multerConfig).array('files[]', 12), async (req, res) => {
+  .post(multer(multerConfig).array('Files[]', 12), async (req, res) => {
     try {
       // const { originalname, size, filename, path: url = '' } = req.file
-
       const { nome, equipamento, tag, descricao, criador, passos } = req.body
       let str = tag.trim()
       str = str.replace(/\s{2,}/g, ' ')
@@ -43,14 +55,18 @@ handler
       array.push('#UB')
 
       const passo: Array<lupope> = []
-      let aux = 0
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const files = req.files as any // { [fieldname: string]: Express.Multer.File[] }
+      // const files = multer.many(req.files, 'Files[]')
       passos.forEach(async (p: string, index: number) => {
         passo.push(await JSON.parse(p))
         if (passo[index].alt !== '') {
-          passo[index].anexo = req.files[aux].path
+          const file = files.find(
+            (f: filler) => f.filename === passo[index].alt
+          )
+          passo[index].anexo = file.path
             .replace('public', '')
             .replaceAll('\\', '/')
-          aux = aux + 1
         } else {
           passo[index].anexo = ''
         }
@@ -75,6 +91,30 @@ handler
       return res.json({ message: 'Erro ao processar sua requisição' })
     }
   })
+// .post(async (req, res) => {
+//   try {
+//     const dirre = `./public/uploads/lups/${req.headers.nomeprocedimento}`
+//     fs.mkdirSync(dirre)
+//     // fs.readdir('./public/uploads/images', async (err, paths) => {
+//     //   await console.log(paths.length)
+//     // })
+//     const form = formidable({
+//       multiples: true,
+//       uploadDir: dirre,
+//       keepExtensions: true
+//     })
+//     form.parse(req, (err, fields, files) => {
+//       if (err) {
+//         return res.json({ message: 'Erro ao processar sua requisição' })
+//       }
+//       console.log(files)
+//     })
+//   } catch (e) {
+//     if (e.code != 'EEXIST') throw e
+//     console.log(err)
+//     return res.json({ message: 'Erro ao processar sua requisição' })
+//   }
+// })
 export const config = {
   api: {
     bodyParser: false

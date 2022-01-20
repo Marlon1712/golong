@@ -1,30 +1,28 @@
 import multer, { Options } from 'multer'
 import crypto from 'crypto'
+import fs from 'fs'
 
 export const multerConfig: Options = {
   dest: './public/uploads',
   storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      switch (file.mimetype) {
-        case 'video/mp4': {
-          cb(null, './public/uploads/videos')
-          break
+    destination: async (req, file, cb) => {
+      try {
+        const dirre = `./public/uploads/lups/${req.headers.nomeprocedimento}`
+        // Verifica se não existe
+        if (!fs.existsSync(dirre)) {
+          // Efetua a criação do diretório
+          fs.mkdirSync(dirre)
         }
-        case 'application/pdf': {
-          cb(null, './public/uploads/documents')
-          break
-        }
-        default: {
-          cb(null, './public/uploads/images')
-          break
-        }
+        cb(null, dirre)
+      } catch (error) {
+        console.log(error)
       }
     },
     filename: (req, file, cb) => {
-      crypto.randomBytes(10, (err, hash) => {
+      crypto.randomBytes(10, err => {
         if (err) cb(err, file.filename)
 
-        const fileName = `${hash.toString('hex')}-${file.originalname}`
+        const fileName = file.originalname // const fileName = `${hash.toString('hex')}-${file.originalname}`
         cb(null, fileName)
       })
     }

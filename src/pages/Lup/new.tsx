@@ -46,7 +46,7 @@ export default function App(): JSX.Element {
     data.passos = passos
     const proced = new FormData()
     data.passos.forEach(i => {
-      proced.append('files[]', i.anexo)
+      proced.append('Files[]', i.anexo)
       proced.append('passos[]', JSON.stringify(i))
     })
     proced.append('nome', data.nome)
@@ -56,7 +56,8 @@ export default function App(): JSX.Element {
     proced.append('criador', 'Marlon')
     const options = {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        nomeProcedimento: data.nome
       }
     }
     axios

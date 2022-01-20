@@ -1,8 +1,10 @@
 import mongoose, { Document } from 'mongoose'
 import fs from 'fs'
-import { promisify } from 'util'
+import rimraf from 'rimraf'
+// import { promisify } from 'util'
 
 interface lup extends Document {
+  nome: string
   passo: [
     {
       anexo: string
@@ -33,11 +35,17 @@ const LupSchema = new mongoose.Schema(
 )
 
 LupSchema.pre('remove', function (this: lup) {
-  return this.passo.forEach(pass => {
-    if (pass.anexo !== '') {
-      promisify(fs.unlink)(`./public${pass.anexo}`)
+  try {
+    const dirre = `./public/uploads/lups/${this.nome}`
+    if (fs.existsSync(dirre)) {
+      // Efetua a criação do diretório
+      return rimraf(dirre, function () {
+        console.log('done')
+      })
     }
-  })
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 /** LupSchema.pre('updateOne', function () {
