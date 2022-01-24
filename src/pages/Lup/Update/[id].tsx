@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
+import { GetServerSideProps, NextPage } from 'next'
 import { useForm } from 'react-hook-form'
-import { Container, Imputt } from '../../styles/pages/New'
-import Navbar from '../../components/Navbar'
-import { produce } from 'immer'
+import { Container, Imputt } from '../../../styles/pages/New'
+import Navbar from '../../../components/Navbar'
 import { generate } from 'shortid'
 import { FaTrash, FaPlus } from 'react-icons/fa'
 import axios from 'axios'
+import { produce } from 'immer'
 import Router from 'next/router'
+import Loading from '../../../components/loading-animation'
 
 interface passosInterface {
   id: string
@@ -22,37 +24,29 @@ interface FormData {
   _id: string
   nome: string
   equipamento: string
-  tag: string
+  tags: string
   descricao: string
-  passos: passosInterface[]
+  passo: passosInterface[]
   criador: string
 }
+interface Props {
+  data: FormData
+}
 
-export default function App(): JSX.Element {
-  const [passos, setPassos] = useState<passosInterface[]>([
-    {
-      id: generate(),
-      numero: 1,
-      titulo: '',
-      obs: '',
-      descricao: '',
-      anexo: '',
-      src: '',
-      alt: ''
-    }
-  ])
+const Page: NextPage<Props> = props => {
   const [msg, setMsg] = useState(null)
-  const { register, handleSubmit } = useForm<FormData>()
-  const onSubmit = (data: FormData) => {
-    data.passos = passos
+  const [data, setData] = useState<FormData>(props.data)
+  const { handleSubmit } = useForm<FormData>()
+
+  const onSubmit = () => {
     const proced = new FormData()
-    data.passos.forEach(i => {
+    data.passo.forEach(i => {
       proced.append('Files[]', i.anexo)
       proced.append('passos[]', JSON.stringify(i))
     })
     proced.append('nome', data.nome)
     proced.append('equipamento', data.equipamento)
-    proced.append('tag', data.tag)
+    proced.append('tag', data.tags)
     proced.append('descricao', data.descricao)
     proced.append('criador', 'Marlon')
     const options = {
@@ -62,7 +56,7 @@ export default function App(): JSX.Element {
       }
     }
     axios
-      .post('/api/Lup', proced, options)
+      .put(`/api/Lup/${data._id}`, proced, options)
       .then(response => {
         if (response.data.message) {
           setMsg(response.data.message)
@@ -74,6 +68,16 @@ export default function App(): JSX.Element {
       .catch(e => {
         console.log(e)
       })
+  }
+  if (!data) {
+    return (
+      <>
+        <Navbar />
+        <Container>
+          <Loading />
+        </Container>
+      </>
+    )
   }
 
   return (
@@ -88,9 +92,11 @@ export default function App(): JSX.Element {
                 style={{ textTransform: 'capitalize' }}
                 id="nome"
                 required
+                value={data?.nome}
                 autoComplete="off"
                 placeholder="Informe nome do procedimento"
-                {...register('nome', { required: true })}
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                onChange={() => {}}
               />
               <label>Nome:</label>
             </div>
@@ -101,8 +107,16 @@ export default function App(): JSX.Element {
                 id="equipamento"
                 autoComplete="off"
                 required
+                defaultValue={data?.equipamento}
                 placeholder="Informe equipamento aplicavel"
-                {...register('equipamento', { required: true })}
+                onChange={event => {
+                  const equipamento = event.target.value
+                  setData(currentPasso =>
+                    produce(currentPasso, v => {
+                      v.equipamento = equipamento
+                    })
+                  )
+                }}
               />
               <label>Aplicabidade:</label>
             </div>
@@ -112,8 +126,16 @@ export default function App(): JSX.Element {
               <input
                 id="tag"
                 required
+                defaultValue={data?.tags}
                 placeholder="tags"
-                {...register('tag', { required: false })}
+                onChange={event => {
+                  const tags = event.target.value
+                  setData(currentPasso =>
+                    produce(currentPasso, v => {
+                      v.tags = tags
+                    })
+                  )
+                }}
               />
               <label>Tags:</label>
             </div>
@@ -123,25 +145,34 @@ export default function App(): JSX.Element {
               <textarea
                 id="descricao"
                 required
+                defaultValue={data?.descricao}
                 placeholder="Descreva objetivo do procedimento"
-                {...register('descricao', { required: true })}
+                onChange={event => {
+                  const desc = event.target.value
+                  setData(currentPasso =>
+                    produce(currentPasso, v => {
+                      v.descricao = desc
+                    })
+                  )
+                }}
               />
               <label htmlFor="objetivo">Descrição:</label>
             </div>
           </Imputt>
 
           <ul>
-            {passos.map((data, index) => (
-              <li style={{ marginTop: '10px' }} key={data.id}>
+            {data?.passo?.map((passo: passosInterface, index: number) => (
+              <li style={{ marginTop: '10px' }} key={passo.id}>
                 <div className="passos">
                   <div>
                     <input
                       autoComplete="off"
+                      defaultValue={passo.numero}
                       onChange={e => {
                         const numero = parseInt(e.target.value) + 1
-                        setPassos(currentPasso =>
+                        setData(currentPasso =>
                           produce(currentPasso, v => {
-                            v[index].numero = numero
+                            v.passo[index].numero = numero
                           })
                         )
                       }}
@@ -157,13 +188,14 @@ export default function App(): JSX.Element {
                         className="titulo"
                         autoComplete="off"
                         required
+                        defaultValue={passo.titulo}
                         placeholder={`Titulo do passo ${index + 1}`}
                         maxLength={30}
                         onChange={event => {
                           const titulo = event.target.value
-                          setPassos(currentPasso =>
+                          setData(currentPasso =>
                             produce(currentPasso, v => {
-                              v[index].titulo = titulo
+                              v.passo[index].titulo = titulo
                             })
                           )
                         }}
@@ -178,13 +210,14 @@ export default function App(): JSX.Element {
                         name="obs"
                         className="obs"
                         required
+                        defaultValue={passo.obs}
                         autoComplete="off"
                         placeholder="Digite uma observação caso necessário"
                         onChange={e => {
                           const obs = e.target.value
-                          setPassos(currentPasso =>
+                          setData(currentPasso =>
                             produce(currentPasso, v => {
-                              v[index].obs = obs
+                              v.passo[index].obs = obs
                             })
                           )
                         }}
@@ -198,12 +231,13 @@ export default function App(): JSX.Element {
                         name="description"
                         placeholder="Descreva atividade a ser executada no passo"
                         required
+                        defaultValue={passo.descricao}
                         autoComplete="off"
                         onChange={event => {
                           const descricao = event.target.value
-                          setPassos(currentPasso =>
+                          setData(currentPasso =>
                             produce(currentPasso, v => {
-                              v[index].descricao = descricao
+                              v.passo[index].descricao = descricao
                             })
                           )
                         }}
@@ -213,13 +247,32 @@ export default function App(): JSX.Element {
                   </Imputt>
                   <div className="view-input">
                     <label>Anexo:</label>
-                    {!!data.src && (
+                    {passo?.anexo && (
                       <div className="img-container">
-                        {data.alt.indexOf('mp4') < 0 && (
-                          <img src={data.src} alt="anexo" />
-                        )}
-                        {data.alt.indexOf('mp4') > 0 && (
-                          <video src={data.src} className="video-preview" />
+                        {typeof passo.anexo === 'string' ? (
+                          <>
+                            {passo.alt?.indexOf('mp4') < 0 && (
+                              <img src={passo.anexo} alt="anexo" />
+                            )}
+                            {passo?.alt?.indexOf('mp4') > 0 && (
+                              <video
+                                src={passo.anexo}
+                                className="video-preview"
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {passo.alt?.indexOf('mp4') < 0 && (
+                              <img src={passo.src} alt="anexo" />
+                            )}
+                            {passo?.alt?.indexOf('mp4') > 0 && (
+                              <video
+                                src={passo.src}
+                                className="video-preview"
+                              />
+                            )}
+                          </>
                         )}
                       </div>
                     )}
@@ -231,11 +284,11 @@ export default function App(): JSX.Element {
                       onChange={event => {
                         const target = event.target as HTMLInputElement
                         const anexo = (target.files as FileList)[0]
-                        setPassos(currentPasso =>
+                        setData(currentPasso =>
                           produce(currentPasso, v => {
-                            v[index].anexo = anexo
-                            v[index].src = URL.createObjectURL(anexo)
-                            v[index].alt = anexo.name
+                            v.passo[index].anexo = anexo
+                            v.passo[index].src = URL.createObjectURL(anexo)
+                            v.passo[index].alt = anexo.name
                           })
                         )
                       }}
@@ -249,19 +302,20 @@ export default function App(): JSX.Element {
                 type="button"
                 className="add-passo btn"
                 onClick={() => {
-                  setPassos(currentPasso => [
-                    ...currentPasso,
-                    {
-                      id: generate(),
-                      numero: currentPasso.length + 1,
-                      titulo: '',
-                      obs: '',
-                      descricao: '',
-                      anexo: '',
-                      src: '',
-                      alt: ''
-                    }
-                  ])
+                  setData(currentPasso =>
+                    produce(currentPasso, v => {
+                      v.passo.push({
+                        id: generate(),
+                        numero: currentPasso.passo.length + 1,
+                        titulo: '',
+                        obs: '',
+                        descricao: '',
+                        anexo: '',
+                        src: '',
+                        alt: ''
+                      })
+                    })
+                  )
                 }}
               >
                 <FaPlus />
@@ -270,13 +324,11 @@ export default function App(): JSX.Element {
                 type="button"
                 className="excluir-passo btn"
                 onClick={() => {
-                  setPassos(currentPasso => {
-                    const listpassos = [...currentPasso]
-                    if (listpassos.length > 1) {
-                      listpassos.pop()
-                    }
-                    return listpassos
-                  })
+                  setData(currentPasso =>
+                    produce(currentPasso, v => {
+                      v.passo.pop()
+                    })
+                  )
                 }}
               >
                 <FaTrash />
@@ -294,3 +346,16 @@ export default function App(): JSX.Element {
     </>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const res = await fetch(`http://localhost:3000/api/Lup/${context.query.id}`)
+  const data: FormData = await res.json()
+
+  return {
+    props: {
+      data
+    }
+  }
+}
+
+export default Page

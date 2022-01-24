@@ -26,7 +26,7 @@ const Lup: NextPage = () => {
   }
   useEffect(() => {
     buscar()
-  }, [buscatag])
+  }, [buscatag, data])
   const excluirProcediment = useCallback((id: string) => {
     api.delete(`/Lup/${id}`)
   }, [])
@@ -66,7 +66,9 @@ const Lup: NextPage = () => {
                 </div>
                 <div className="comando">
                   <button className="btn-excluir">
-                    <FaPencilAlt />
+                    <Link href={`/Lup/Update/${doc._id}`} passHref>
+                      <FaPencilAlt />
+                    </Link>
                   </button>
                   <button
                     className="btn-excluir"

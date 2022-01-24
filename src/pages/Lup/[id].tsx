@@ -1,12 +1,13 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import React, { useState, useEffect } from 'react'
+import React from 'react' // import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Container } from '../../styles/pages/Lup'
 import Navbar from '../../components/Navbar'
 import { QRCode } from 'react-qrcode-logo'
 import { procedimentFetch } from '../../hooks/procedimentFetch'
 import Loading from '../../components/loading-animation'
+import { Date } from 'mongoose'
 
 interface lup {
   _id: string
@@ -25,6 +26,8 @@ interface lup {
     }
   ]
   criador: string
+  createdAt: Date
+  updatedAt: Date
 }
 interface props {
   id: string
@@ -42,12 +45,10 @@ interface passoviwer {
 
 export default function Lup({ id, urlEnv }: props) {
   const urlDev = `/Lup/${id}`
-  const [segundos, setSegundos] = useState(0)
+  const { isFallback } = useRouter()
   const { data } = procedimentFetch<lup>(urlDev)
 
-  // const { isFallback } = useRouter()
-
-  if (!data) {
+  if (isFallback) {
     return (
       <>
         <Navbar />
@@ -57,17 +58,6 @@ export default function Lup({ id, urlEnv }: props) {
       </>
     )
   }
-
-  // if (isFallback) {
-  //   return (
-  //     <>
-  //       <Navbar />
-  //       <Container>
-  //         <Loading />
-  //       </Container>
-  //     </>
-  //   )
-  // }
 
   function viewAnexo(passo: passoviwer) {
     if (passo.anexo) {
@@ -101,12 +91,12 @@ export default function Lup({ id, urlEnv }: props) {
           </div>
           <h1>{data?.nome}</h1>
           <p className="desc-procedimento">
-            <strong>{'Descrição: '}</strong>
-            {data?.descricao}
-          </p>
-          <p className="desc-procedimento">
             <strong>{'Aplicavel: '}</strong>
             {data?.equipamento}
+          </p>
+          <p className="desc-procedimento">
+            <strong>{'Descrição: '}</strong>
+            {data?.descricao}
           </p>
           <ul>
             {data?.passo.map(pass => (
@@ -130,6 +120,22 @@ export default function Lup({ id, urlEnv }: props) {
               </li>
             ))}
           </ul>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly'
+            }}
+          >
+            <p className="desc-procedimento">
+              <strong>{'Criado em: '}</strong>
+              {data?.createdAt}
+            </p>
+            <p className="desc-procedimento">
+              <strong>{'Ultima modificação: '}</strong>
+              {data?.updatedAt}
+            </p>
+          </div>
         </div>
       </Container>
     </>

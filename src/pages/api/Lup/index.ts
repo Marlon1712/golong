@@ -37,7 +37,6 @@ handler
       const array = str?.split(' ')
 
       const data = await Lup.find({ tags: { $all: array } })
-      console.log(data.length)
       res.status(200).send(data)
     } catch (e) {
       res.status(500).send({
