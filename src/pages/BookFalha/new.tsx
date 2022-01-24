@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Container, Imputt } from '../../styles/pages/New'
 import Navbar from '../../components/Navbar'
+import { ProgressBar } from 'react-bootstrap'
 import { produce } from 'immer'
 import { generate } from 'shortid'
 import { FaTrash, FaPlus } from 'react-icons/fa'
@@ -29,6 +30,7 @@ interface FormData {
 }
 
 export default function App(): JSX.Element {
+  const [percentage, setPercentage] = useState(0.0)
   const [passos, setPassos] = useState<passosInterface[]>([
     {
       id: generate(),
@@ -56,6 +58,11 @@ export default function App(): JSX.Element {
     proced.append('descricao', data.descricao)
     proced.append('criador', 'Marlon')
     const options = {
+      onUploadProgress: ProgressEvent => {
+        const { loaded, total } = ProgressEvent
+        const percent = Math.floor(loaded * 100) / total
+        setPercentage(percent)
+      },
       headers: {
         'Content-Type': 'multipart/form-data',
         tipoProcedimento: 'books',
@@ -290,6 +297,7 @@ export default function App(): JSX.Element {
               Salvar
             </button>
           </div>
+          <ProgressBar now={percentage} label={`${percentage}%`} />
           {msg && <span>{msg}</span>}
         </form>
       </Container>
