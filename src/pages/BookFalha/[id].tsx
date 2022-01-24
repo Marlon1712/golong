@@ -1,10 +1,14 @@
-import { NextPageContext, NextPage } from 'next'
-import React from 'react'
-import { Container } from '../../styles/pages/Lup'
+import { GetStaticProps, GetStaticPaths } from 'next'
+import { ParsedUrlQuery } from 'querystring'
+import React from 'react' // import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { Container } from '../../styles/pages/Book'
 import Navbar from '../../components/Navbar'
 import { QRCode } from 'react-qrcode-logo'
 import { procedimentFetch } from '../../hooks/procedimentFetch'
 import Loading from '../../components/loading-animation'
+import { Date } from 'mongoose'
+
 interface lup {
   _id: string
   nome: string
@@ -22,10 +26,14 @@ interface lup {
     }
   ]
   criador: string
+  createdAt: Date
+  updatedAt: Date
 }
 interface props {
-  _id: string
+  id: string
+  urlEnv: string
 }
+
 interface passoviwer {
   _id: string
   numero: number
@@ -35,11 +43,12 @@ interface passoviwer {
   anexo: string
 }
 
-const Lup: NextPage<props> = ({ _id }) => {
-  const urlDev = `/Lup/${_id}`
+export default function Lup({ id, urlEnv }: props) {
+  const urlDev = `/BookFalha/${id}`
+  const { isFallback } = useRouter()
   const { data } = procedimentFetch<lup>(urlDev)
 
-  if (!data) {
+  if (isFallback) {
     return (
       <>
         <Navbar />
@@ -78,28 +87,31 @@ const Lup: NextPage<props> = ({ _id }) => {
       <Container>
         <div className="form">
           <div className="footer">
-            <QRCode value={`http://192.168.100.8:3000/Lup/${_id}`} />
+            <QRCode value={`${urlEnv}/BookFalha/${id}`} />
           </div>
           <h1>{data?.nome}</h1>
-          <h5 className="desc-procedimento">{data?.descricao}</h5>
-          <h5 className="desc-procedimento">
+          <p className="desc-procedimento">
             <strong>{'Aplicavel: '}</strong>
             {data?.equipamento}
-          </h5>
+          </p>
+          <p className="desc-procedimento">
+            <strong>{'Descrição: '}</strong>
+            {data?.descricao}
+          </p>
           <ul>
             {data?.passo.map(pass => (
               <li key={pass._id}>
                 <div className="passos">
                   {pass?.titulo && <h2>{`${pass.numero} - ${pass.titulo}`}</h2>}
-
                   {pass?.obs && (
                     <p className="page-obs">
-                      <strong>{'Obs.: '}</strong> {pass.obs}
+                      <strong style={{ color: 'red' }}>{'Obs.: '}</strong>{' '}
+                      {pass.obs}
                     </p>
                   )}
                   {viewAnexo(pass)}
                   {pass?.descricao && (
-                    <p className="desc-passo">
+                    <p className="desc-procedimento">
                       <strong>{'Atividade: '}</strong>
                       {pass.descricao}
                     </p>
@@ -108,16 +120,54 @@ const Lup: NextPage<props> = ({ _id }) => {
               </li>
             ))}
           </ul>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly'
+            }}
+          >
+            <p className="desc-procedimento">
+              <strong>{'Criado em: '}</strong>
+              {data?.createdAt}
+            </p>
+            <p className="desc-procedimento">
+              <strong>{'Ultima modificação: '}</strong>
+              {data?.updatedAt}
+            </p>
+          </div>
         </div>
       </Container>
     </>
   )
 }
 
-Lup.getInitialProps = (context: NextPageContext) => {
-  const _id = context.query.id as string
+export const getStaticPaths: GetStaticPaths = async () => {
+  const response = await fetch(`${process.env.APP_URL}/api/BookFalha`, {
+    headers: { tag: 'UB' }
+  })
+  const data = await response.json()
 
-  return { _id }
+  const paths = data.map((l: lup) => {
+    return { params: { id: l._id } }
+  })
+
+  return {
+    paths,
+    fallback: true
+  }
 }
+interface IParams extends ParsedUrlQuery {
+  id: string
+}
+export const getStaticProps: GetStaticProps = context => {
+  const { id } = context.params as IParams
 
-export default Lup
+  return {
+    props: {
+      id,
+      urlEnv: process.env.APP_URL
+    },
+    revalidate: 60
+  }
+}

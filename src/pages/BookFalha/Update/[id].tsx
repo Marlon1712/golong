@@ -52,16 +52,16 @@ const Page: NextPage<Props> = props => {
     const options = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        tipoProcedimento: 'lups',
+        tipoProcedimento: 'books',
         nomeProcedimento: data.nome
       }
     }
     axios
-      .put(`/api/Lup/${data._id}`, proced, options)
+      .put(`/api/BookFalha/${data._id}`, proced, options)
       .then(response => {
         if (response.data.message) {
           setMsg(response.data.message)
-          Router.push('/Lup')
+          Router.push('/BookFalha')
         } else {
           setMsg(response.data.error)
         }
@@ -86,7 +86,7 @@ const Page: NextPage<Props> = props => {
       <Navbar />
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h1>Nova Lup</h1>
+          <h1>Editar Book</h1>
           <Imputt>
             <div className="control">
               <input
@@ -349,7 +349,9 @@ const Page: NextPage<Props> = props => {
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const res = await fetch(`http://localhost:3000/api/Lup/${context.query.id}`)
+  const res = await fetch(
+    `http://localhost:3000/api/BookFalha/${context.query.id}`
+  )
   const data: FormData = await res.json()
 
   return {

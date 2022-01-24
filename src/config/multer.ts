@@ -7,7 +7,12 @@ export const multerConfig: Options = {
   storage: multer.diskStorage({
     destination: async (req, file, cb) => {
       try {
-        const dirre = `./public/uploads/lups/${req.headers.nomeprocedimento}`
+        let procedimento = req.headers.nomeprocedimento?.toString().trim()
+        procedimento = procedimento
+          ?.replace(/\s{2,}/g, ' ')
+          .split(' ')
+          .join('_')
+        const dirre = `./public/uploads/${req.headers.tipoprocedimento}/${procedimento}`
         // Verifica se não existe
         if (!fs.existsSync(dirre)) {
           // Efetua a criação do diretório

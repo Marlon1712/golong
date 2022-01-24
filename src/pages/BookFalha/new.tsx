@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Container, Imput } from '../../styles/pages/New'
+import { Container, Imputt } from '../../styles/pages/New'
 import Navbar from '../../components/Navbar'
 import { produce } from 'immer'
 import { generate } from 'shortid'
 import { FaTrash, FaPlus } from 'react-icons/fa'
 import axios from 'axios'
+import Router from 'next/router'
 
 interface passosInterface {
   id: string
@@ -13,7 +14,7 @@ interface passosInterface {
   titulo: string
   obs: string
   descricao: string
-  anexo: string
+  anexo: string | File
   src: string
   alt: string
 }
@@ -23,15 +24,7 @@ interface FormData {
   equipamento: string
   tag: string
   descricao: string
-  passos: [
-    {
-      numero: number
-      titulo: string
-      obs: string
-      descricao: string
-      anexo: string
-    }
-  ]
+  passos: passosInterface[]
   criador: string
 }
 
@@ -50,12 +43,11 @@ export default function App(): JSX.Element {
   ])
   const [msg, setMsg] = useState(null)
   const { register, handleSubmit } = useForm<FormData>()
-  const url = '/api/Lup'
-  const onSubmit = data => {
+  const onSubmit = (data: FormData) => {
     data.passos = passos
     const proced = new FormData()
     data.passos.forEach(i => {
-      proced.append('files[]', i.anexo)
+      proced.append('Files[]', i.anexo)
       proced.append('passos[]', JSON.stringify(i))
     })
     proced.append('nome', data.nome)
@@ -65,14 +57,17 @@ export default function App(): JSX.Element {
     proced.append('criador', 'Marlon')
     const options = {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        tipoProcedimento: 'books',
+        nomeProcedimento: data.nome
       }
     }
     axios
-      .post(url, proced, options)
+      .post('/api/BookFalha', proced, options)
       .then(response => {
         if (response.data.message) {
           setMsg(response.data.message)
+          Router.push('/BookFalha')
         } else {
           setMsg(response.data.error)
         }
@@ -87,42 +82,56 @@ export default function App(): JSX.Element {
       <Navbar />
       <Container>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h1>Nova Lup</h1>
-          <Imput>
-            <input
-              style={{ textTransform: 'capitalize' }}
-              id="nome"
-              autoComplete="off"
-              placeholder="Informe nome do procedimento"
-              {...register('nome', { required: true })}
-            />
-            <label>Nome:</label>
-          </Imput>
-          <Imput>
-            <input
-              id="equipamento"
-              autoComplete="off"
-              placeholder="Informe equipamento aplicavel"
-              {...register('equipamento', { required: true })}
-            />
-            <label>Aplicabidade:</label>
-          </Imput>
-          <Imput>
-            <input
-              id="tag"
-              placeholder="tags"
-              {...register('tag', { required: false })}
-            />
-            <label>Tags:</label>
-          </Imput>
-          <div>
-            <label>Objetivo:</label>
-            <textarea
-              id="descricao"
-              placeholder="Descreva objetivo do procedimento"
-              {...register('descricao', { required: true })}
-            />
-          </div>
+          <h1>Novo Book</h1>
+          <Imputt>
+            <div className="control">
+              <input
+                style={{ textTransform: 'capitalize' }}
+                id="nome"
+                required
+                autoComplete="off"
+                maxLength={40}
+                placeholder="Informe nome do procedimento"
+                {...register('nome', { required: true })}
+              />
+              <label>Nome:</label>
+            </div>
+          </Imputt>
+          <Imputt>
+            <div className="control">
+              <input
+                id="equipamento"
+                autoComplete="off"
+                required
+                placeholder="Informe equipamento aplicavel"
+                {...register('equipamento', { required: true })}
+              />
+              <label>Aplicabidade:</label>
+            </div>
+          </Imputt>
+          <Imputt>
+            <div className="control">
+              <input
+                id="tag"
+                required
+                placeholder="tags"
+                {...register('tag', { required: false })}
+              />
+              <label>Tags:</label>
+            </div>
+          </Imputt>
+          <Imputt>
+            <div className="control">
+              <textarea
+                id="descricao"
+                required
+                placeholder="Descreva objetivo do procedimento"
+                {...register('descricao', { required: true })}
+              />
+              <label htmlFor="objetivo">Descrição:</label>
+            </div>
+          </Imputt>
+
           <ul>
             {passos.map((data, index) => (
               <li style={{ marginTop: '10px' }} key={data.id}>
@@ -141,35 +150,38 @@ export default function App(): JSX.Element {
                       style={{ display: 'none' }}
                     />
                   </div>
-                  <Imput>
-                    <input
-                      style={{ textTransform: 'capitalize' }}
-                      id="titulo"
-                      name="titulo"
-                      className="titulo"
-                      autoComplete="off"
-                      placeholder="Nome do passo"
-                      maxLength={30}
-                      onChange={e => {
-                        const titulo = e.target.value
-                        setPassos(currentPasso =>
-                          produce(currentPasso, v => {
-                            v[index].titulo = titulo
-                          })
-                        )
-                      }}
-                    />
-                    <label>Passo:</label>
-                  </Imput>
-                  <div>
-                    <label>
-                      Obs.:
+                  <Imputt>
+                    <div className="control">
+                      <input
+                        style={{ textTransform: 'capitalize' }}
+                        id="titulo"
+                        name="titulo"
+                        className="titulo"
+                        autoComplete="off"
+                        required
+                        placeholder={`Titulo do passo ${index + 1}`}
+                        maxLength={30}
+                        onChange={event => {
+                          const titulo = event.target.value
+                          setPassos(currentPasso =>
+                            produce(currentPasso, v => {
+                              v[index].titulo = titulo
+                            })
+                          )
+                        }}
+                      />
+                      <label>{`Passo ${index + 1}: `}</label>
+                    </div>
+                  </Imputt>
+                  <Imputt>
+                    <div className="control">
                       <textarea
                         id="obs"
                         name="obs"
                         className="obs"
+                        required
                         autoComplete="off"
-                        placeholder="Descreva observações de segurança caso necessario"
+                        placeholder="Digite uma observação caso necessário"
                         onChange={e => {
                           const obs = e.target.value
                           setPassos(currentPasso =>
@@ -179,55 +191,57 @@ export default function App(): JSX.Element {
                           )
                         }}
                       />
-                    </label>
-                  </div>
-                  <div style={{ marginTop: '10px' }}>
-                    <label>
-                      Atividade:
+                      <label htmlFor="obs">Obs.:</label>
+                    </div>
+                  </Imputt>
+                  <Imputt>
+                    <div className="control">
                       <textarea
+                        name="description"
+                        placeholder="Descreva atividade a ser executada no passo"
+                        required
                         autoComplete="off"
-                        onChange={e => {
-                          const descricao = e.target.value
+                        onChange={event => {
+                          const descricao = event.target.value
                           setPassos(currentPasso =>
                             produce(currentPasso, v => {
                               v[index].descricao = descricao
                             })
                           )
                         }}
-                        placeholder="Descreva atividade a ser executada no passo"
-                      />
-                    </label>
-                  </div>
-                  <div>
-                    <label>
-                      Anexo:
-                      {!!data.src && (
-                        <div className="img-container">
-                          {data.alt.indexOf('mp4') < 0 && (
-                            <img src={data.src} alt="anexo" />
-                          )}
-                          {data.alt.indexOf('mp4') > 0 && (
-                            <video src={data.src} className="video-preview" />
-                          )}
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        className="custom-file-input"
-                        name="file"
-                        accept=".png, .jpg, .jpeg, .mp4"
-                        onChange={e => {
-                          const anexo = e.target.files[0]
-                          setPassos(currentPasso =>
-                            produce(currentPasso, v => {
-                              v[index].anexo = anexo
-                              v[index].src = URL.createObjectURL(anexo)
-                              v[index].alt = e.target.files[0].name
-                            })
-                          )
-                        }}
-                      />
-                    </label>
+                      ></textarea>
+                      <label htmlFor="description">Atividade:</label>
+                    </div>
+                  </Imputt>
+                  <div className="view-input">
+                    <label>Anexo:</label>
+                    {!!data.src && (
+                      <div className="img-container">
+                        {data.alt.indexOf('mp4') < 0 && (
+                          <img src={data.src} alt="anexo" />
+                        )}
+                        {data.alt.indexOf('mp4') > 0 && (
+                          <video src={data.src} className="video-preview" />
+                        )}
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      name="file"
+                      accept=".png, .jpg, .jpeg, .mp4"
+                      onChange={event => {
+                        const target = event.target as HTMLInputElement
+                        const anexo = (target.files as FileList)[0]
+                        setPassos(currentPasso =>
+                          produce(currentPasso, v => {
+                            v[index].anexo = anexo
+                            v[index].src = URL.createObjectURL(anexo)
+                            v[index].alt = anexo.name
+                          })
+                        )
+                      }}
+                    />
                   </div>
                 </div>
               </li>
@@ -254,7 +268,19 @@ export default function App(): JSX.Element {
               >
                 <FaPlus />
               </button>
-              <button type="button" className="excluir-passo btn">
+              <button
+                type="button"
+                className="excluir-passo btn"
+                onClick={() => {
+                  setPassos(currentPasso => {
+                    const listpassos = [...currentPasso]
+                    if (listpassos.length > 1) {
+                      listpassos.pop()
+                    }
+                    return listpassos
+                  })
+                }}
+              >
                 <FaTrash />
               </button>
             </div>

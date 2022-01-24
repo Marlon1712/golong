@@ -3,7 +3,7 @@ import fs from 'fs'
 import rimraf from 'rimraf'
 // import { promisify } from 'util'
 
-interface lup extends Document {
+interface book extends Document {
   nome: string
   passo: [
     {
@@ -11,7 +11,7 @@ interface lup extends Document {
     }
   ]
 }
-const LupSchema = new mongoose.Schema(
+const BookFalha = new mongoose.Schema(
   {
     nome: String,
     equipamento: String,
@@ -34,16 +34,15 @@ const LupSchema = new mongoose.Schema(
   }
 )
 
-LupSchema.pre('remove', async function (this: lup) {
+BookFalha.pre('remove', async function (this: book) {
   try {
     let procedimento = this.nome.toString().trim()
     procedimento = procedimento
       .replace(/\s{2,}/g, ' ')
       .split(' ')
       .join('_')
-    const dirre = `./public/uploads/lups/${procedimento}`
+    const dirre = `./public/uploads/books/${procedimento}`
     if (fs.existsSync(dirre)) {
-      // Efetua a criação do diretório
       return rimraf(dirre, function () {
         console.log('done')
       })
@@ -57,4 +56,5 @@ LupSchema.pre('remove', async function (this: lup) {
   console.log('----------------------------------------update')
 }) */
 
-export default mongoose.models.Lup || mongoose.model('Lup', LupSchema)
+export default mongoose.models.BookFalha ||
+  mongoose.model('BookFalha', BookFalha)

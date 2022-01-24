@@ -58,6 +58,7 @@ export default function App(): JSX.Element {
     const options = {
       headers: {
         'Content-Type': 'multipart/form-data',
+        tipoProcedimento: 'lups',
         nomeProcedimento: data.nome
       }
     }
@@ -89,6 +90,7 @@ export default function App(): JSX.Element {
                 id="nome"
                 required
                 autoComplete="off"
+                maxLength={40}
                 placeholder="Informe nome do procedimento"
                 {...register('nome', { required: true })}
               />

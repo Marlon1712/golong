@@ -8,6 +8,7 @@
 /public/uploads/images/*
 /public/uploads/videos/*
 /public/uploads/lups/*
+/public/uploads/books/*
 
 # testing
 /coverage

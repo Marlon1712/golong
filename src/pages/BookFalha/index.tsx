@@ -1,12 +1,11 @@
 import { NextPage } from 'next'
-import React, { useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 import Navbar from '../../components/Navbar'
 import api from '../../services/api'
-import { Container } from '../../styles/pages/Lup_list'
-import { FaTrash, FaPencilAlt } from 'react-icons/fa'
-import { procedimentFetch } from '../../hooks/procedimentFetch'
-interface lup {
+import { Container } from '../../styles/pages/Book_list'
+import { FaTrash, FaPencilAlt, FaSearch } from 'react-icons/fa'
+interface book {
   _id: string
   nome: string
   equipamento: string
@@ -14,31 +13,62 @@ interface lup {
   passos: []
   criador: string
 }
-const BookFalha: NextPage = () => {
-  const urlDev = '/Lup'
+const Book: NextPage = () => {
+  const [buscatag, setBusca] = useState('#UB')
+  const [txtbusca, setTxtbusca] = useState('')
 
-  const { data } = procedimentFetch<lup[]>(urlDev)
-
+  const [data, setData] = useState<book[]>([])
+  const buscar = async () => {
+    const response = await api.get<book[]>('/BookFalha', {
+      headers: { tag: buscatag }
+    })
+    setData(response.data)
+  }
+  useEffect(() => {
+    buscar()
+  }, [buscatag, data])
   const excluirProcediment = useCallback((id: string) => {
-    api.delete(`/Lup/${id}`)
+    api.delete(`/BookFalha/${id}`)
   }, [])
   return (
     <>
       <Navbar />
       <Container>
-        <h1 style={{ marginTop: '60px' }}>{'Book De Falhas'}</h1>
+        <h1 style={{ marginTop: '60px' }}>{"Book's"}</h1>
+        <div className="filtro">
+          <input
+            name="tag"
+            onChange={event => {
+              setTxtbusca(event.target.value)
+            }}
+          />
+          <button
+            className="btn-go"
+            onClick={() => {
+              if (txtbusca !== '') {
+                setBusca(txtbusca)
+              } else {
+                setBusca('#UB')
+              }
+            }}
+          >
+            <FaSearch />
+          </button>
+        </div>
         <div className="listagem">
           <ul>
             {data?.map(doc => (
               <li key={doc._id}>
                 <div className="comando-link">
-                  <Link href={`/Lup/${doc._id}`} passHref>
+                  <Link href={`/BookFalha/${doc._id}`} passHref>
                     <a>{doc.nome}</a>
                   </Link>
                 </div>
                 <div className="comando">
                   <button className="btn-excluir">
-                    <FaPencilAlt />
+                    <Link href={`/BookFalha/Update/${doc._id}`} passHref>
+                      <FaPencilAlt />
+                    </Link>
                   </button>
                   <button
                     className="btn-excluir"
@@ -55,8 +85,8 @@ const BookFalha: NextPage = () => {
         </div>
         <div>
           <button className="btn-new">
-            <Link href="/Lup/new">
-              <h2>Nova Falha</h2>
+            <Link href="/BookFalha/new">
+              <h2>Novo Book</h2>
             </Link>
           </button>
         </div>
@@ -65,4 +95,4 @@ const BookFalha: NextPage = () => {
   )
 }
 
-export default BookFalha
+export default Book
