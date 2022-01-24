@@ -168,6 +168,6 @@ export const getStaticProps: GetStaticProps = context => {
       id,
       urlEnv: process.env.APP_URL
     },
-    revalidate: 60
+    revalidate: 30
   }
 }
