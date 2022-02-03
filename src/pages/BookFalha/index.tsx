@@ -26,7 +26,7 @@ const Book: NextPage = () => {
   }
   useEffect(() => {
     buscar()
-  }, [buscatag, data])
+  }, [buscatag])
   const excluirProcediment = useCallback((id: string) => {
     api.delete(`/BookFalha/${id}`)
   }, [])

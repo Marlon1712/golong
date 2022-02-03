@@ -58,7 +58,7 @@ export default function App(): JSX.Element {
     proced.append('descricao', data.descricao)
     proced.append('criador', 'Marlon')
     const options = {
-      onUploadProgress: ProgressEvent => {
+      onUploadProgress: (ProgressEvent: any) => {
         const { loaded, total } = ProgressEvent
         const percent = Math.floor(loaded * 100) / total
         setPercentage(percent)

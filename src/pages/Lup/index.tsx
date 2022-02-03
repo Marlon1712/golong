@@ -26,7 +26,7 @@ const Lup: NextPage = () => {
   }
   useEffect(() => {
     buscar()
-  }, [buscatag, data])
+  }, [buscatag])
   const excluirProcediment = useCallback((id: string) => {
     api.delete(`/Lup/${id}`)
   }, [])
